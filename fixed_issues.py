@@ -67,6 +67,7 @@ Eaxmple:
 import docopt
 import json
 from github import Github
+from github import Auth
 from lib.Table import TableRST, TableMD
 import itertools
 import os.path
@@ -131,8 +132,8 @@ if __name__ == '__main__':
     desc_len = int(args['--col_desc_width'])
 
     outputfile = str(os.path.splitext(args['--config'])[0])+".rst"
-
-    gh = Github(gh_token=gh_token)
+    auth = Auth.Token(gh_token)
+    gh = Github(auth=auth)
     repo = gh.get_repo(repo_name)
     repo_tags = repo.get_tags()
     if prev_release_commit:
@@ -230,7 +231,7 @@ if __name__ == '__main__':
                     desc
                 ])
             except IOError as e:
-                print('ERROR: %s' % str(e))
+                print('ERROR: For #%s, %s' % (pr_num, str(e)))
         md.add_row([
             new_release_ver,
             '[#%s](%s)' % (pr_num, gh_url),
